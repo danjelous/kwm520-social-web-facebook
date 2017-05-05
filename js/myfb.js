@@ -15,6 +15,8 @@ $(document).ready(() => {
             // Login successfull
             if (response.authResponse) {
 
+                $("button").button("option", "disabled", false);
+                $("#login").button("option", "disabled", true);
                 showUserDetails();
             }
         },
