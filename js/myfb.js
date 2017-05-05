@@ -34,8 +34,12 @@ function showUserDetails() {
         function (response) {
 
             // Insert your code here
-            if(response) {
-                let html = '<div id="pic"><img src="http://graph.facebook.com/' + response.id + '/picture/"></div>'; 
+            if (response) {
+                console.log(response);
+                let html =
+                    `<div id="pic">
+                        <img src="http://graph.facebook.com/${response.id}/picture/">
+                    </div>`;
 
                 $('#user').empty().html(html).show();
             }
