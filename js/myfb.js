@@ -33,6 +33,23 @@ $(document).ready(() => {
     });
 });
 
+function showLikes(user) {
+
+    if(user) {
+        let html = user + " likes : <br>";
+        FB.api('/' + user + '/likes', (likes) => {
+
+            if(likes && likes.data) {
+                for(let like in likes) {
+                    html += likes.data[like].name + " - ";
+                }
+            }
+        });
+
+        $("#likes").empty().html(html).show();
+    }
+}
+
 function showFriends() {
 
     FB.api(
@@ -60,13 +77,14 @@ function showUserDetails() {
 
             // Insert your code here
             if (response) {
-                console.log(response);
+                let currentUser = response.id;
                 let html =
                     `<div id="pic">
-                        <img src="http://graph.facebook.com/${response.id}/picture/">
+                        <img src="http://graph.facebook.com/${currentUser}/picture/">
                     </div>`;
 
                 $('#user').empty().html(html).show();
+                showLikes(currentUser);
             }
         }
     );
