@@ -1,3 +1,3 @@
 # Facebook app
 
-Getting in touch with various features and possibilities of the Facebook API.
+Getting in touch with various features and possibilities of the Facebook Graph API.
