@@ -25,7 +25,30 @@ $(document).ready(() => {
                 // Well, not so
             });
     });
+
+    $("#showfriends").click(() => {
+
+        emptyAndHideAll();
+        showFriends();
+    });
 });
+
+function showFriends() {
+
+    FB.api(
+        'me/friends', (list) => {
+            console.log(list);
+        }
+    )
+}
+
+function emptyAndHideAll() {
+
+    // Possible refactoring detected :)
+    $("#details").empty().hide();
+    $("#friends").empty().hide();
+    $("#likes").empty().hide();
+}
 
 function showUserDetails() {
 
