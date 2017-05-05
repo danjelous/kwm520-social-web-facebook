@@ -3,6 +3,9 @@
 var latitude = 48;
 var longitude = 14;
 var map;
+var hometown = {}
+hometown.name = "Linz";
+var curLatLong;
 
 $(document).ready(() => {
 
@@ -45,7 +48,30 @@ function calculateAndDisplayRoute(currentPos, hometown) {
 }
 
 function displayError(positionError) {
-  alert("error");
+    alert("error");
+}
+
+function calculateAndDisplayRoute(currentPos, hometown) {
+    if (currentPos != null && hometown != null) {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            map: map,
+            preserveViewport: true,
+            draggable: true
+        });
+
+        directionsService.route({
+            origin: currentPos,
+            destination: hometown,
+            travelMode: google.maps.TravelMode.DRIVING
+        }, function (response, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    }
 }
 
 function createMap() {
@@ -60,49 +86,49 @@ function createMap() {
     map = new google.maps.Map(document.getElementById("map-canvas"), options);
 }
 
-function initMap(){
-    
+function initMap() {
+
     try {
-        if(typeof(navigator.geolocation) == 'undefined'){
+        if (typeof (navigator.geolocation) == 'undefined') {
             alert("I'm sorry, but geolocation services are not supported by your browser.");
         } else {
             var gl = navigator.geolocation;
             gl.getCurrentPosition(displayPosition, displayError);
         }
-    }catch(e){}
+    } catch (e) { }
 }
 
-function showLocation(){
-    if (hometown != null && hometown.name != null && currentUser != null){
+function showLocation() {
+    if (hometown != null && hometown.name != null && currentUser != null) {
         var geocoder = new google.maps.Geocoder();
-        if(geocoder) {
+        if (geocoder) {
             geocoder.geocode(
-            {address : hometown.name}, 
-            function(results, status) {
-                if(status == google.maps.GeocoderStatus.OK) {
-                    userLatLong = results[0].geometry.location;
-                    map.setCenter(userLatLong);
-                    /*if (marker != null){
-                        marker.setMap(null);
-                    }    */
-                    marker = new google.maps.Marker({
-                        position: userLatLong,
-                        map: map,
-                        icon: {url:'home.gif'},
-                        title: currentUser.name
-                    });
-                    calculateAndDisplayRoute(curLatLong,userLatLong)
-                    google.maps.event.addListener(marker, "click", function() {
-                        createInfoWindow(currentUser,marker);
-                    });
-                } else {
-                    alert(address + " was not found.");
-                }
-            });
+                { address: hometown.name },
+                function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        userLatLong = results[0].geometry.location;
+                        map.setCenter(userLatLong);
+                        /*if (marker != null){
+                            marker.setMap(null);
+                        }    */
+                        marker = new google.maps.Marker({
+                            position: userLatLong,
+                            map: map,
+                            icon: { url: 'home.gif' },
+                            title: currentUser.name
+                        });
+                        calculateAndDisplayRoute(curLatLong, userLatLong)
+                        // google.maps.event.addListener(marker, "click", function() {
+                        //     createInfoWindow(currentUser,marker);
+                        // });
+                    } else {
+                        alert(address + " was not found.");
+                    }
+                });
         }
     } else {
         alert("User does not provide hometown");
-    }    
+    }
 }
 
 function displayPosition(position) {
@@ -116,17 +142,17 @@ function displayPosition(position) {
     });
     map.setCenter(curLatLong);
     console.log("got current pos");
-    calculateAndDisplayRoute(curLatLong,userLatLong);
+    calculateAndDisplayRoute(curLatLong, userLatLong);
 }
 
 function showLikes(user) {
 
-    if(user) {
+    if (user) {
         let html = user + " likes : <br>";
         FB.api('/' + user + '/likes', (likes) => {
 
-            if(likes && likes.data) {
-                for(let like in likes) {
+            if (likes && likes.data) {
+                for (let like in likes) {
                     html += likes.data[like].name + " - ";
                 }
             }
@@ -171,6 +197,7 @@ function showUserDetails() {
 
                 $('#user').empty().html(html).show();
                 showLikes(currentUser);
+                showLocation();
             }
         }
     );
